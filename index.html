@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我们的时光 ❤</title>
+<style>
+  :root {
+    --bg: #1a1225;
+    --bg2: #241636;
+    --card: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.12);
+    --text: #f5eef8;
+    --sub: #b8a6c9;
+    --accent: #ff6b9d;
+    --accent2: #c084fc;
+    --gold: #ffd166;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    overflow-x: hidden;
+    line-height: 1.6;
+  }
+  /* 星空背景 */
+  #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .main { position:relative; z-index:1; }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
+    padding:12px; background:rgba(26,18,37,0.75); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  nav a {
+    color:var(--sub); text-decoration:none; font-size:14px; padding:6px 14px;
+    border-radius:99px; transition:all .3s;
+  }
+  nav a:hover { color:var(--accent); background:rgba(255,107,157,0.1); }
+
+  section { max-width:1080px; margin:0 auto; padding:90px 24px 40px; }
+  h2 {
+    font-size:30px; text-align:center; margin-bottom:10px; font-weight:700;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .sec-sub { text-align:center; color:var(--sub); font-size:14px; margin-bottom:36px; }
+
+  /* Hero */
+  .hero { min-height:92vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center; padding-top:60px; }
+  .hero-heart { font-size:64px; animation:beat 1.4s ease-in-out infinite; filter:drop-shadow(0 0 24px rgba(255,107,157,.5)); }
+  @keyframes beat { 0%,100%{transform:scale(1)} 12%{transform:scale(1.18)} 24%{transform:scale(1)} 36%{transform:scale(1.12)} 48%{transform:scale(1)} }
+  .hero-names { font-size:46px; font-weight:800; margin:14px 0 6px; letter-spacing:2px; }
+  .hero-names .amp { color:var(--accent); font-size:34px; margin:0 12px; }
+  .hero-since { color:var(--sub); font-size:15px; margin-bottom:44px; }
+  .counter { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
+  .counter .cell {
+    background:var(--card); border:1px solid var(--border); border-radius:18px;
+    padding:18px 10px; min-width:96px; backdrop-filter:blur(6px);
+  }
+  .counter .num { font-size:34px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
+  .counter .lab { font-size:12px; color:var(--sub); margin-top:2px; }
+  .next-anniv { margin-top:26px; color:var(--sub); font-size:14px; }
+  .next-anniv b { color:var(--gold); }
+
+  /* 照片墙 */
+  .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
+  .ph {
+    position:relative; border-radius:18px; overflow:hidden; cursor:pointer;
+    aspect-ratio:4/5; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px;
+    transition:transform .35s, box-shadow .35s;
+  }
+  .ph:hover { transform:translateY(-6px); box-shadow:0 14px 40px rgba(192,132,252,.25); }
+  .ph img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
+  .ph .cap {
+    position:absolute; left:0; right:0; bottom:0; padding:26px 14px 12px; font-size:13px;
+    background:linear-gradient(transparent,rgba(0,0,0,.65)); color:#fff;
+  }
+  .ph.placeholder .heart { font-size:44px; opacity:.85; }
+  .ph.placeholder .txt { font-size:13px; color:var(--sub); text-align:center; padding:0 14px; }
+  .ph.p1 { background:linear-gradient(135deg,#5b2a86,#a34a9e); }
+  .ph.p2 { background:linear-gradient(135deg,#83314a,#d16ba5); }
+  .ph.p3 { background:linear-gradient(135deg,#3d2b6b,#7a5cc0); }
+  .ph.p4 { background:linear-gradient(135deg,#6b2e4e,#e06c9f); }
+  .ph.p5 { background:linear-gradient(135deg,#2f3a6b,#5f7cc0); }
+  .ph.p6 { background:linear-gradient(135deg,#5a3a2e,#c98a5e); }
+
+  /* 灯箱 */
+  #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100; display:none; align-items:center; justify-content:center; cursor:zoom-out; }
+  #lightbox img { max-width:92vw; max-height:88vh; border-radius:12px; }
+
+  /* 时间线 */
+  .timeline { position:relative; max-width:720px; margin:0 auto; padding-left:32px; }
+  .timeline::before { content:""; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--accent),var(--accent2)); }
+  .tl-item { position:relative; margin-bottom:34px; }
+  .tl-item::before {
+    content:"♥"; position:absolute; left:-34px; top:2px; color:var(--accent); font-size:16px;
+    background:var(--bg); padding:2px 0;
+  }
+  .tl-item .date { color:var(--gold); font-size:13px; letter-spacing:1px; }
+  .tl-item .title { font-size:19px; font-weight:700; margin:4px 0; }
+  .tl-item .desc { color:var(--sub); font-size:14.5px; }
+
+  /* 小游戏 */
+  .games { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
+  .game {
+    background:var(--card); border:1px solid var(--border); border-radius:20px;
+    padding:28px; text-align:center; backdrop-filter:blur(6px);
+  }
+  .game h3 { font-size:20px; margin-bottom:8px; }
+  .game .hint { color:var(--sub); font-size:13px; margin-bottom:20px; }
+  .game .result {
+    min-height:64px; display:flex; align-items:center; justify-content:center;
+    font-size:20px; font-weight:700; color:var(--gold); margin-bottom:20px;
+    background:rgba(255,209,102,.07); border-radius:14px; padding:10px;
+  }
+  button.btn {
+    background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border:none;
+    padding:11px 30px; border-radius:99px; font-size:15px; cursor:pointer; font-weight:600;
+    transition:transform .2s, box-shadow .2s; font-family:inherit;
+  }
+  button.btn:hover { transform:scale(1.05); box-shadow:0 8px 24px rgba(255,107,157,.35); }
+  button.btn:active { transform:scale(.97); }
+
+  /* 情书 */
+  .letter {
+    max-width:680px; margin:0 auto; background:var(--card); border:1px solid var(--border);
+    border-radius:22px; padding:40px 36px; font-size:16px; line-height:2;
+  }
+  .letter .sig { text-align:right; color:var(--sub); margin-top:18px; font-size:14px; }
+
+  footer { text-align:center; color:var(--sub); font-size:13px; padding:50px 20px 40px; }
+  footer .heartline { letter-spacing:8px; color:var(--accent); margin-bottom:10px; font-size:16px; }
+
+  .fade-in { opacity:0; transform:translateY(26px); transition:all .8s ease; }
+  .fade-in.show { opacity:1; transform:none; }
+
+  @media (max-width:560px){
+    .hero-names { font-size:32px; }
+    .counter .cell { min-width:72px; padding:12px 6px; }
+    .counter .num { font-size:24px; }
+    section { padding:80px 18px 30px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="main">
+
+<nav>
+  <a href="#home">首页</a>
+  <a href="#gallery">照片墙</a>
+  <a href="#timeline">回忆录</a>
+  <a href="#games">小游戏</a>
+  <a href="#letter">情书</a>
+</nav>
+
+<!-- 首页 -->
+<section class="hero" id="home">
+  <div class="hero-heart">❤</div>
+  <div class="hero-names"><span id="nameA">我</span><span class="amp">&amp;</span><span id="nameB">宝贝</span></div>
+  <div class="hero-since" id="sinceText">自 2024 年 1 月 1 日起，我们在一起</div>
+  <div class="counter">
+    <div class="cell"><div class="num" id="cDay">0</div><div class="lab">天</div></div>
+    <div class="cell"><div class="num" id="cHour">0</div><div class="lab">小时</div></div>
+    <div class="cell"><div class="num" id="cMin">0</div><div class="lab">分钟</div></div>
+    <div class="cell"><div class="num" id="cSec">0</div><div class="lab">秒</div></div>
+  </div>
+  <div class="next-anniv" id="nextAnniv"></div>
+</section>
+
+<!-- 照片墙 -->
+<section id="gallery">
+  <h2 class="fade-in">📷 照片墙</h2>
+  <div class="sec-sub fade-in">点击照片可以放大 · 把照片发给我，我会替换进这里</div>
+  <div class="gallery fade-in" id="galleryGrid"></div>
+</section>
+
+<!-- 时间线 -->
+<section id="timeline">
+  <h2 class="fade-in">📜 回忆时间线</h2>
+  <div class="sec-sub fade-in">从相遇到现在的每一步，都值得被记住</div>
+  <div class="timeline fade-in" id="timelineBox"></div>
+</section>
+
+<!-- 小游戏 -->
+<section id="games">
+  <h2 class="fade-in">🎲 恋爱小游戏</h2>
+  <div class="sec-sub fade-in">选择困难症和仪式感，都交给我</div>
+  <div class="games fade-in">
+    <div class="game">
+      <h3>🍜 今天吃什么</h3>
+      <div class="hint">点击抽取，再也不用纠结啦</div>
+      <div class="result" id="foodResult">点击下方按钮开始</div>
+      <button class="btn" onclick="drawFood()">抽一个！</button>
+    </div>
+    <div class="game">
+      <h3>💌 情话盲盒</h3>
+      <div class="hint">每天拆一个，甜度随机爆表</div>
+      <div class="result" id="wishResult">点击下方按钮拆盒</div>
+      <button class="btn" onclick="drawWish()">拆盲盒！</button>
+    </div>
+  </div>
+</section>
+
+<!-- 情书 -->
+<section id="letter">
+  <h2 class="fade-in">✉️ 写给你的信</h2>
+  <div class="sec-sub fade-in">理工男的浪漫，是把心意写成代码</div>
+  <div class="letter fade-in" id="letterBody"></div>
+</section>
+
+<footer>
+  <div class="heartline">♥ ♥ ♥</div>
+  <div id="footerText">这个网页，只为你而写。</div>
+</footer>
+
+</div>
+
+<div id="lightbox" onclick="this.style.display='none'"><img id="lightboxImg" src="" alt=""></div>
+
+<script>
+/* =========================================================
+ * ✏️ 数据配置区 —— 所有内容都在这里改，方便随时补充
+ * ========================================================= */
+const CONFIG = {
+  // 两个人的昵称
+  nameA: "我",
+  nameB: "宝贝",
+
+  // 在一起的日期（用于倒计时，格式：年,月-1,日）
+  startDate: new Date(2024, 0, 1),
+
+  // 照片墙：img 为图片路径（把照片放进同目录并改名即可）；cap 为配文
+  // 下面先用占位卡片，发我真实照片后即可替换
+  photos: [
+    { img: null, cap: "第一张合照（占位）" },
+    { img: null, cap: "第一次旅行（占位）" },
+    { img: null, cap: "一起看的日落（占位）" },
+    { img: null, cap: "那家常去的店（占位）" },
+    { img: null, cap: "生日那天的你（占位）" },
+    { img: null, cap: "日常的小确幸（占位）" },
+  ],
+
+  // 回忆时间线：date / title / desc
+  timeline: [
+    { date: "2024.01.01", title: "我们在一起啦", desc: "故事开始的那一天，记得当时的天气和心跳。" },
+    { date: "2024.03.20", title: "第一次一起旅行", desc: "在路上发现，和对方看什么风景都好看。" },
+    { date: "2024.06.15", title: "第一次吵架又和好", desc: "学会了吵架不过夜，拥抱比讲道理更有用。" },
+    { date: "2025.01.01", title: "在一起一周年", desc: "一年了，还是觉得遇见你是我的幸运。" },
+    { date: "——", title: "下一个纪念日", desc: "正在发生，等待被记录……" },
+  ],
+
+  // 「今天吃什么」菜单，可以随便加
+  foods: ["火锅","烤肉","日料","麻辣烫","披萨","饺子","奶茶配炸鸡","牛肉面","寿司","川菜","螺蛳粉","在家做饭"],
+
+  // 情话盲盒，可以随时补充
+  wishes: [
+    "遇见你之后，连 OS 更新日志都变得可爱了。",
+    "我的人生没有 bug，直到你出现——原来你是 feature。",
+    "别的算法求最优解，我的算法只求你。",
+    "如果爱你需要理由，那理由就是没有理由。",
+    "你是我所有随机事件里，最确定的那个答案。",
+    "今天也想见你，明天也是，天天如此。",
+  ],
+
+  // 情书内容（支持换行）
+  letter: "亲爱的：\n\n以前的人写情书，我觉得现在的男生可以为你写一个网页。\n\n这里的每一行代码都在说同一句话——谢谢你出现在我的生活里。往后的日子，照片会越来越多，时间线会越来越长，而我会一直在。\n\n「从今往后，我的每个 to-do list 里，第一条永远是你。」",
+};
+
+/* =========================================================
+ * 以下为渲染逻辑，一般不用改
+ * ========================================================= */
+
+// 首页
+document.getElementById("nameA").textContent = CONFIG.nameA;
+document.getElementById("nameB").textContent = CONFIG.nameB;
+const s = CONFIG.startDate;
+document.getElementById("sinceText").textContent =
+  `自 ${s.getFullYear()} 年 ${s.getMonth()+1} 月 ${s.getDate()} 日起，我们在一起`;
+
+function tick(){
+  const now = new Date();
+  let diff = Math.max(0, now - s);
+  const day = Math.floor(diff/864e5);
+  const hour = Math.floor(diff/36e5)%24;
+  const min = Math.floor(diff/6e4)%60;
+  const sec = Math.floor(diff/1e3)%60;
+  cDay.textContent = day; cHour.textContent = hour; cMin.textContent = min; cSec.textContent = sec;
+
+  // 下一个纪念日（按周年）
+  const anni = new Date(s.getFullYear() + now.getFullYear() - s.getFullYear(), s.getMonth(), s.getDate());
+  if (anni < now) anni.setFullYear(anni.getFullYear()+1);
+  const left = Math.ceil((anni - now)/864e5);
+  document.getElementById("nextAnniv").innerHTML =
+    `距离下一个纪念日（<b>${anni.getFullYear()} 年 ${anni.getMonth()+1} 月 ${anni.getDate()} 日</b>）还有 <b>${left}</b> 天`;
+}
+tick(); setInterval(tick, 1000);
+
+// 照片墙
+const PLACEHOLDER_CLASSES = ["p1","p2","p3","p4","p5","p6"];
+const grid = document.getElementById("galleryGrid");
+CONFIG.photos.forEach((p, i) => {
+  const el = document.createElement("div");
+  el.className = "ph " + (p.img ? "" : "placeholder " + PLACEHOLDER_CLASSES[i % 6]);
+  if (p.img) {
+    el.innerHTML = `<img src="${p.img}" alt="${p.cap}"><div class="cap">${p.cap}</div>`;
+    el.onclick = () => { lightboxImg.src = p.img; lightbox.style.display = "flex"; };
+  } else {
+    el.innerHTML = `<div class="heart">🖼️</div><div class="txt">${p.cap}</div>`;
+  }
+  grid.appendChild(el);
+});
+
+// 时间线
+const tl = document.getElementById("timelineBox");
+CONFIG.timeline.forEach(t => {
+  const el = document.createElement("div");
+  el.className = "tl-item";
+  el.innerHTML = `<div class="date">${t.date}</div><div class="title">${t.title}</div><div class="desc">${t.desc}</div>`;
+  tl.appendChild(el);
+});
+
+// 小游戏
+let foodSpinning = false;
+function drawFood(){
+  if (foodSpinning) return;
+  foodSpinning = true;
+  const box = document.getElementById("foodResult");
+  let n = 0;
+  const timer = setInterval(() => {
+    box.textContent = "🎲 " + CONFIG.foods[Math.floor(Math.random()*CONFIG.foods.length)];
+    if (++n >= 14) {
+      clearInterval(timer);
+      const pick = CONFIG.foods[Math.floor(Math.random()*CONFIG.foods.length)];
+      box.textContent = "✨ 就吃「" + pick + "」吧！";
+      foodSpinning = false;
+    }
+  }, 90);
+}
+function drawWish(){
+  const pick = CONFIG.wishes[Math.floor(Math.random()*CONFIG.wishes.length)];
+  document.getElementById("wishResult").textContent = pick;
+}
+
+// 情书
+document.getElementById("letterBody").innerHTML =
+  CONFIG.letter.split("\n").map(l => `<p>${l || "&nbsp;"}</p>`).join("") +
+  `<div class="sig">—— 永远爱你的 ${CONFIG.nameA}</div>`;
+document.getElementById("footerText").textContent =
+  `这个网页，只为你而写。♥ ${CONFIG.nameA} & ${CONFIG.nameB}`;
+
+// 星空背景
+const cv = document.getElementById("stars"), ctx = cv.getContext("2d");
+let stars = [];
+function resize(){
+  cv.width = innerWidth; cv.height = innerHeight;
+  stars = Array.from({length:120}, () => ({
+    x: Math.random()*cv.width, y: Math.random()*cv.height,
+    r: Math.random()*1.4 + .3, a: Math.random(),
+    v: Math.random()*.02 + .005
+  }));
+}
+resize(); addEventListener("resize", resize);
+(function draw(){
+  ctx.clearRect(0,0,cv.width,cv.height);
+  stars.forEach(st => {
+    st.a += st.v; const al = .35 + Math.abs(Math.sin(st.a))*.6;
+    ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 7);
+    ctx.fillStyle = `rgba(255,255,255,${al})`; ctx.fill();
+  });
+  requestAnimationFrame(draw);
+})();
+
+// 滚动淡入
+const io = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) e.target.classList.add("show");
+}), { threshold:.12 });
+document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
+</script>
+</body>
+</html>
