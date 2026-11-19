@@ -15,17 +15,15 @@
     --accent: #ff6b9d;
     --accent2: #c084fc;
     --gold: #ffd166;
+    --ok: #3ddc97;
   }
   * { margin:0; padding:0; box-sizing:border-box; }
   html { scroll-behavior: smooth; }
   body {
-    background: var(--bg);
-    color: var(--text);
+    background: var(--bg); color: var(--text);
     font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
-    overflow-x: hidden;
-    line-height: 1.6;
+    overflow-x: hidden; line-height: 1.6;
   }
-  /* 星空背景 */
   #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
   .main { position:relative; z-index:1; }
 
@@ -35,18 +33,13 @@
     padding:12px; background:rgba(26,18,37,0.75); backdrop-filter:blur(12px);
     border-bottom:1px solid var(--border);
   }
-  nav a {
-    color:var(--sub); text-decoration:none; font-size:14px; padding:6px 14px;
-    border-radius:99px; transition:all .3s;
-  }
+  nav a { color:var(--sub); text-decoration:none; font-size:14px; padding:6px 14px; border-radius:99px; transition:all .3s; }
   nav a:hover { color:var(--accent); background:rgba(255,107,157,0.1); }
 
-  section { max-width:1080px; margin:0 auto; padding:90px 24px 40px; }
-  h2 {
-    font-size:30px; text-align:center; margin-bottom:10px; font-weight:700;
+  section { max-width:1100px; margin:0 auto; padding:90px 24px 40px; }
+  h2 { font-size:30px; text-align:center; margin-bottom:10px; font-weight:700;
     background:linear-gradient(90deg,var(--accent),var(--accent2));
-    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-  }
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
   .sec-sub { text-align:center; color:var(--sub); font-size:14px; margin-bottom:36px; }
 
   /* Hero */
@@ -57,68 +50,98 @@
   .hero-names .amp { color:var(--accent); font-size:34px; margin:0 12px; }
   .hero-since { color:var(--sub); font-size:15px; margin-bottom:44px; }
   .counter { display:flex; gap:14px; flex-wrap:wrap; justify-content:center; }
-  .counter .cell {
-    background:var(--card); border:1px solid var(--border); border-radius:18px;
-    padding:18px 10px; min-width:96px; backdrop-filter:blur(6px);
-  }
+  .counter .cell { background:var(--card); border:1px solid var(--border); border-radius:18px; padding:18px 10px; min-width:96px; backdrop-filter:blur(6px); }
   .counter .num { font-size:34px; font-weight:800; color:var(--accent); font-variant-numeric:tabular-nums; }
   .counter .lab { font-size:12px; color:var(--sub); margin-top:2px; }
   .next-anniv { margin-top:26px; color:var(--sub); font-size:14px; }
   .next-anniv b { color:var(--gold); }
 
-  /* 照片图集（按约会分区） */
-  .album-group { margin-bottom:40px; }
-  .album-title {
-    display:flex; align-items:center; gap:10px;
-    font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text);
+  /* 图集：大分区并排 */
+  .albums { display:flex; gap:24px; overflow-x:auto; padding-bottom:16px; scroll-snap-type:x mandatory; }
+  .album {
+    flex:0 0 auto; width:320px; scroll-snap-align:start;
+    background:var(--card); border:1px solid var(--border); border-radius:20px;
+    padding:20px; backdrop-filter:blur(6px);
   }
-  .album-title::before {
-    content:"♥"; color:var(--accent); font-size:16px;
+  .album-head { display:flex; align-items:baseline; justify-content:space-between; margin-bottom:18px; }
+  .album-title { font-size:20px; font-weight:700; }
+  .album-date { font-size:12px; color:var(--sub); }
+  /* 事件 */
+  .event { margin-bottom:22px; }
+  .event-title { font-size:14px; color:var(--accent); margin-bottom:10px; display:flex; align-items:center; gap:8px; }
+  .event-title::before { content:"♥"; font-size:11px; }
+  .event-count { font-size:11px; color:var(--sub); font-weight:400; }
+  /* 事件内多图堆叠（重叠排列） */
+  .stack { position:relative; height:180px; }
+  .stack .ph {
+    position:absolute; top:0; left:0; width:150px; height:180px;
+    border-radius:14px; overflow:hidden; border:2px solid var(--bg2);
+    cursor:pointer; transition:transform .3s, z-index .3s;
+    box-shadow:0 6px 18px rgba(0,0,0,.4);
   }
-  .album-title .count { font-size:12px; color:var(--sub); font-weight:400; }
-  .gallery {
-    display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
-    gap:10px;
-  }
-  .ph {
-    position:relative; border-radius:12px; overflow:hidden; cursor:pointer;
-    aspect-ratio:1/1; border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px;
-    transition:transform .25s, box-shadow .25s;
-  }
-  .ph:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(192,132,252,.28); }
-  .ph img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
-  .ph .cap {
-    position:absolute; left:0; right:0; bottom:0; padding:16px 8px 8px; font-size:11px;
+  .stack .ph img { width:100%; height:100%; object-fit:cover; }
+  .stack .ph .cap {
+    position:absolute; left:0; right:0; bottom:0; padding:14px 6px 6px; font-size:10px;
     background:linear-gradient(transparent,rgba(0,0,0,.7)); color:#fff; text-align:center;
   }
-  .ph.placeholder .heart { font-size:26px; opacity:.85; }
-  .ph.placeholder .txt { font-size:11px; color:var(--sub); text-align:center; padding:0 8px; }
-  .ph.p1 { background:linear-gradient(135deg,#5b2a86,#a34a9e); }
-  .ph.p2 { background:linear-gradient(135deg,#83314a,#d16ba5); }
-  .ph.p3 { background:linear-gradient(135deg,#3d2b6b,#7a5cc0); }
-  .ph.p4 { background:linear-gradient(135deg,#6b2e4e,#e06c9f); }
-  .ph.p5 { background:linear-gradient(135deg,#2f3a6b,#5f7cc0); }
-  .ph.p6 { background:linear-gradient(135deg,#5a3a2e,#c98a5e); }
-
-  /* 灯箱 */
-  #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.85); z-index:100; display:none; align-items:center; justify-content:center; cursor:zoom-out; }
-  #lightbox img { max-width:92vw; max-height:88vh; border-radius:12px; }
+  .stack .ph:hover { transform:translateY(-8px) rotate(0deg) !important; z-index:50 !important; }
+  .stack .ph.placeholder { display:flex; align-items:center; justify-content:center; }
+  .stack .ph.placeholder .txt { font-size:11px; color:var(--sub); text-align:center; padding:0 8px; }
+  .ph.p1{background:linear-gradient(135deg,#5b2a86,#a34a9e)} .ph.p2{background:linear-gradient(135deg,#83314a,#d16ba5)}
+  .ph.p3{background:linear-gradient(135deg,#3d2b6b,#7a5cc0)} .ph.p4{background:linear-gradient(135deg,#6b2e4e,#e06c9f)}
+  .ph.p5{background:linear-gradient(135deg,#2f3a6b,#5f7cc0)} .ph.p6{background:linear-gradient(135deg,#5a3a2e,#c98a5e)}
+  .empty-event { font-size:12px; color:var(--sub); font-style:italic; padding:8px 0; }
 
   /* 时间线 */
   .timeline { position:relative; max-width:720px; margin:0 auto; padding-left:32px; }
   .timeline::before { content:""; position:absolute; left:9px; top:6px; bottom:6px; width:2px; background:linear-gradient(var(--accent),var(--accent2)); }
   .tl-item { position:relative; margin-bottom:34px; }
-  .tl-item::before {
-    content:"♥"; position:absolute; left:-34px; top:2px; color:var(--accent); font-size:16px;
-    background:var(--bg); padding:2px 0;
-  }
+  .tl-item::before { content:"♥"; position:absolute; left:-34px; top:2px; color:var(--accent); font-size:16px; background:var(--bg); padding:2px 0; }
   .tl-item .date { color:var(--gold); font-size:13px; letter-spacing:1px; }
   .tl-item .title { font-size:19px; font-weight:700; margin:4px 0; }
   .tl-item .desc { color:var(--sub); font-size:14.5px; }
 
   footer { text-align:center; color:var(--sub); font-size:13px; padding:50px 20px 40px; }
   footer .heartline { letter-spacing:8px; color:var(--accent); margin-bottom:10px; font-size:16px; }
+
+  /* 灯箱 */
+  #lightbox { position:fixed; inset:0; background:rgba(0,0,0,.88); z-index:100; display:none; align-items:center; justify-content:center; cursor:zoom-out; flex-direction:column; }
+  #lightbox img { max-width:92vw; max-height:88vh; border-radius:12px; }
+  #lightbox .lb-cap { margin-top:12px; color:var(--sub); font-size:14px; }
+
+  /* 管理入口 */
+  #adminBtn { position:fixed; bottom:22px; right:22px; z-index:60; width:46px; height:46px; border-radius:50%;
+    background:rgba(255,255,255,.08); border:1px solid var(--border); color:var(--sub); font-size:20px; cursor:pointer;
+    backdrop-filter:blur(8px); transition:all .3s; }
+  #adminBtn:hover { color:var(--accent); border-color:var(--accent); }
+
+  /* 管理面板 */
+  #adminPanel { position:fixed; inset:0; z-index:200; background:rgba(0,0,0,.7); display:none; align-items:center; justify-content:center; }
+  .panel { background:var(--bg2); border:1px solid var(--border); border-radius:22px; width:92vw; max-width:560px; max-height:86vh; overflow-y:auto; padding:28px; }
+  .panel h3 { font-size:20px; margin-bottom:6px; }
+  .panel .sub { color:var(--sub); font-size:13px; margin-bottom:20px; }
+  .field { margin-bottom:14px; }
+  .field label { display:block; font-size:13px; color:var(--sub); margin-bottom:6px; }
+  .field input[type=text], .field input[type=password], .field input[type=file] {
+    width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+    background:rgba(255,255,255,.06); color:var(--text); font-size:14px; font-family:inherit;
+  }
+  .field input:focus { outline:none; border-color:var(--accent); }
+  .btn { background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border:none; padding:11px 26px;
+    border-radius:99px; font-size:14px; cursor:pointer; font-weight:600; font-family:inherit; transition:transform .2s; }
+  .btn:hover { transform:scale(1.04); }
+  .btn.ghost { background:rgba(255,255,255,.08); border:1px solid var(--border); }
+  .btn.small { padding:7px 16px; font-size:13px; }
+  .btn.danger { background:#e0566b; }
+  .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .status { font-size:13px; margin-top:12px; min-height:20px; }
+  .status.ok { color:var(--ok); }
+  .status.err { color:#ff6b6b; }
+  .divider { height:1px; background:var(--border); margin:18px 0; }
+  .hint { font-size:12px; color:var(--sub); line-height:1.6; }
+  .admin-list { margin:10px 0; }
+  .admin-list .item { display:flex; align-items:center; justify-content:space-between; padding:8px 10px; border:1px solid var(--border); border-radius:10px; margin-bottom:8px; font-size:13px; }
+  .admin-list .item .ops { display:flex; gap:6px; }
 
   .fade-in { opacity:0; transform:translateY(26px); transition:all .8s ease; }
   .fade-in.show { opacity:1; transform:none; }
@@ -128,6 +151,7 @@
     .counter .cell { min-width:72px; padding:12px 6px; }
     .counter .num { font-size:24px; }
     section { padding:80px 18px 30px; }
+    .album { width:280px; }
   }
 </style>
 </head>
@@ -145,7 +169,7 @@
 <section class="hero" id="home">
   <div class="hero-heart">❤</div>
   <div class="hero-names"><span id="nameA">我</span><span class="amp">&amp;</span><span id="nameB">宝贝</span></div>
-  <div class="hero-since" id="sinceText">自 2024 年 1 月 1 日起，我们在一起</div>
+  <div class="hero-since" id="sinceText"></div>
   <div class="counter">
     <div class="cell"><div class="num" id="cDay">0</div><div class="lab">天</div></div>
     <div class="cell"><div class="num" id="cHour">0</div><div class="lab">小时</div></div>
@@ -155,11 +179,11 @@
   <div class="next-anniv" id="nextAnniv"></div>
 </section>
 
-<!-- 照片图集 -->
+<!-- 图集 -->
 <section id="gallery">
   <h2 class="fade-in">📷 我们的图集</h2>
-  <div class="sec-sub fade-in">按约会分区 · 点击照片可以放大</div>
-  <div class="fade-in" id="galleryWrap"></div>
+  <div class="sec-sub fade-in">按约会分区 · 点击照片放大</div>
+  <div class="albums fade-in" id="albumsWrap"></div>
 </section>
 
 <!-- 时间线 -->
@@ -176,123 +200,416 @@
 
 </div>
 
-<div id="lightbox" onclick="this.style.display='none'"><img id="lightboxImg" src="" alt=""></div>
+<div id="lightbox" onclick="closeLightbox(event)"><img id="lightboxImg" src="" alt=""><div class="lb-cap" id="lightboxCap"></div></div>
+
+<button id="adminBtn" title="管理" onclick="openAdmin()">⚙</button>
+
+<!-- 管理面板 -->
+<div id="adminPanel">
+  <div class="panel">
+    <h3>🔐 管理图集</h3>
+    <div class="sub">输入密码进入，可添加约会分区、事件和照片</div>
+
+    <div id="authBox">
+      <div class="field">
+        <label>访问密码</label>
+        <input type="password" id="pwdInput" placeholder="输入密码">
+      </div>
+      <button class="btn" onclick="tryAuth()">进入</button>
+      <div class="status" id="authStatus"></div>
+    </div>
+
+    <div id="editorBox" style="display:none;">
+      <div class="field">
+        <label>GitHub Token（写入用，仅存本机浏览器）</label>
+        <input type="password" id="tokenInput" placeholder="粘贴 github_pat_ 开头的 token">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="field">
+        <label>新建大分区（如：第三次约会）</label>
+        <div class="row">
+          <input type="text" id="newAlbumTitle" placeholder="分区名称" style="flex:1;">
+          <input type="text" id="newAlbumDate" placeholder="日期(可选)" style="width:120px;">
+          <button class="btn small" onclick="addAlbum()">添加</button>
+        </div>
+      </div>
+
+      <div class="admin-list" id="albumList"></div>
+
+      <div class="divider"></div>
+      <div class="field">
+        <label>选择要加照片的分区</label>
+        <select id="albumSelect" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--border);background:rgba(255,255,255,.06);color:var(--text);font-family:inherit;"></select>
+      </div>
+      <div class="field">
+        <label>事件名称（如：看电影、吃饭）</label>
+        <input type="text" id="eventTitle" placeholder="事件名称">
+      </div>
+      <div class="field">
+        <label>选择照片（可多选，选中的照片会重叠排列在同一个事件下）</label>
+        <input type="file" id="photoFiles" accept="image/*" multiple>
+      </div>
+      <button class="btn" onclick="uploadPhotos()">上传照片</button>
+      <div class="status" id="editStatus"></div>
+
+      <div class="divider"></div>
+      <div class="row" style="justify-content:space-between;">
+        <button class="btn ghost small" onclick="closeAdmin()">关闭</button>
+        <button class="btn danger small" onclick="resetAll()">清空本地配置</button>
+      </div>
+    </div>
+  </div>
+</div>
 
 <script>
 /* =========================================================
- * ✏️ 数据配置区 —— 所有内容都在这里改，方便随时补充
+ * 配置与常量
  * ========================================================= */
-const CONFIG = {
-  // 两个人的昵称
-  nameA: "刘宏洋",
-  nameB: "骆林洁",
+const REPO = "worldL4/love";
+const BRANCH = "main";
+const DATA_PATH = "data.json";
+// 访问密码（可在部署前修改）
+const ADMIN_PASSWORD = "love2026";
+// GitHub Pages 数据源地址
+const DATA_URL = "https://raw.githubusercontent.com/" + REPO + "/" + BRANCH + "/" + DATA_PATH;
 
-  // 在一起的日期（用于倒计时，格式：年,月-1,日）
-  startDate: new Date(2026, 9, 28),
-
-  // 照片图集：按约会分区。每个区是一个对象：title=分区名，photos=该区的照片数组
-  // 每张照片：img=图片路径（把照片放进同目录并改名），cap=配文
-  // 下面先用占位卡片，发我真实照片后即可替换
-  albums: [
-    {
-      title: "第一次约会 · 2026.11.07",
-      photos: [
-        { img: "photos/date1/ktv.jpg", cap: "晚上去的 KTV" },
-        { img: "photos/date1/hotpot1.jpg", cap: "荡古里小火锅" },
-        { img: "photos/date1/send-home.jpg", cap: "送我回学校" },
-        { img: "photos/date1/heying.jpg", cap: "我们的合照" },
-        { img: "photos/date1/hotpot2.jpg", cap: "荡古里小火锅" },
-      ],
-    },
-    {
-      title: "第二次约会 · 2026.11.14",
-      photos: [
-        { img: null, cap: "电影《我们仅有一次的人生》" },
-        { img: null, cap: "揽月湾看海" },
-        { img: null, cap: "部队火锅" },
-      ],
-    },
-  ],
-
-  // 回忆时间线：date / title / desc
-  timeline: [
-    { date: "2026.10.28", title: "我们在一起啦", desc: "故事开始的那一天。" },
-    { date: "2026.11.07", title: "第一次约会（立冬）", desc: "看电影、吃小火锅、拼豆、晚上去 KTV。那天下雨，你借我充电宝和雨伞。" },
-    { date: "2026.11.14", title: "第二次约会", desc: "逛校园被保安拦下，改看电影、吃鸡公煲，下午私人影院，去揽月湾看海，晚上部队火锅。" },
-    { date: "——", title: "下一个纪念日", desc: "正在发生，等待被记录……" },
-  ],
-};
+let DATA = null;
+let authToken = localStorage.getItem("love_token") || "";
 
 /* =========================================================
- * 以下为渲染逻辑，一般不用改
+ * 数据加载
  * ========================================================= */
-
-// 首页
-document.getElementById("nameA").textContent = CONFIG.nameA;
-document.getElementById("nameB").textContent = CONFIG.nameB;
-const s = CONFIG.startDate;
-document.getElementById("sinceText").textContent =
-  `自 ${s.getFullYear()} 年 ${s.getMonth()+1} 月 ${s.getDate()} 日起，我们在一起`;
-
-function tick(){
-  const now = new Date();
-  let diff = Math.max(0, now - s);
-  const day = Math.floor(diff/864e5);
-  const hour = Math.floor(diff/36e5)%24;
-  const min = Math.floor(diff/6e4)%60;
-  const sec = Math.floor(diff/1e3)%60;
-  cDay.textContent = day; cHour.textContent = hour; cMin.textContent = min; cSec.textContent = sec;
-
-  // 下一个纪念日（按周年）
-  const anni = new Date(s.getFullYear() + now.getFullYear() - s.getFullYear(), s.getMonth(), s.getDate());
-  if (anni < now) anni.setFullYear(anni.getFullYear()+1);
-  const left = Math.ceil((anni - now)/864e5);
-  document.getElementById("nextAnniv").innerHTML =
-    `距离下一个纪念日（<b>${anni.getFullYear()} 年 ${anni.getMonth()+1} 月 ${anni.getDate()} 日</b>）还有 <b>${left}</b> 天`;
+async function loadData() {
+  try {
+    const r = await fetch(DATA_URL + "?t=" + Date.now());
+    if (!r.ok) throw new Error("data fetch fail");
+    DATA = await r.json();
+  } catch (e) {
+    // 兜底：内嵌一份最小数据
+    DATA = {
+      nameA: "刘宏洋", nameB: "骆林洁", startDate: "2026-10-28",
+      albums: [], timeline: []
+    };
+  }
+  renderAll();
 }
-tick(); setInterval(tick, 1000);
 
-// 照片图集（按约会分区）
+function renderAll() {
+  renderHero();
+  renderAlbums();
+  renderTimeline();
+  document.getElementById("footerText").textContent =
+    "这个网页，只为你而写。♥ " + DATA.nameA + " & " + DATA.nameB;
+}
+
+/* =========================================================
+ * 首页渲染
+ * ========================================================= */
+function renderHero() {
+  document.getElementById("nameA").textContent = DATA.nameA;
+  document.getElementById("nameB").textContent = DATA.nameB;
+  const s = new Date(DATA.startDate);
+  document.getElementById("sinceText").textContent =
+    "自 " + s.getFullYear() + " 年 " + (s.getMonth()+1) + " 月 " + s.getDate() + " 日起，我们在一起";
+  startTicker(s);
+}
+
+let tickerStarted = false;
+function startTicker(s) {
+  if (tickerStarted) return; tickerStarted = true;
+  function tick(){
+    const now = new Date();
+    let diff = Math.max(0, now - s);
+    const day = Math.floor(diff/864e5);
+    const hour = Math.floor(diff/36e5)%24;
+    const min = Math.floor(diff/6e4)%60;
+    const sec = Math.floor(diff/1e3)%60;
+    document.getElementById("cDay").textContent = day;
+    document.getElementById("cHour").textContent = hour;
+    document.getElementById("cMin").textContent = min;
+    document.getElementById("cSec").textContent = sec;
+    const anni = new Date(s.getFullYear() + now.getFullYear() - s.getFullYear(), s.getMonth(), s.getDate());
+    if (anni < now) anni.setFullYear(anni.getFullYear()+1);
+    const left = Math.ceil((anni - now)/864e5);
+    document.getElementById("nextAnniv").innerHTML =
+      "距离下一个纪念日（<b>" + anni.getFullYear() + " 年 " + (anni.getMonth()+1) + " 月 " + anni.getDate() + " 日</b>）还有 <b>" + left + "</b> 天";
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+/* =========================================================
+ * 图集渲染：大分区并排 + 事件 + 多图堆叠
+ * ========================================================= */
 const PLACEHOLDER_CLASSES = ["p1","p2","p3","p4","p5","p6"];
-const wrap = document.getElementById("galleryWrap");
-CONFIG.albums.forEach((album, ai) => {
-  const group = document.createElement("div");
-  group.className = "album-group";
-  const title = document.createElement("div");
-  title.className = "album-title";
-  title.innerHTML = `${album.title} <span class="count">${album.photos.length} 张</span>`;
-  group.appendChild(title);
-  const grid = document.createElement("div");
-  grid.className = "gallery";
-  album.photos.forEach((p, i) => {
-    const el = document.createElement("div");
-    el.className = "ph " + (p.img ? "" : "placeholder " + PLACEHOLDER_CLASSES[(ai + i) % 6]);
-    if (p.img) {
-      el.innerHTML = `<img src="${p.img}" alt="${p.cap}"><div class="cap">${p.cap}</div>`;
-      el.onclick = () => { lightboxImg.src = p.img; lightbox.style.display = "flex"; };
-    } else {
-      el.innerHTML = `<div class="heart">🖼️</div><div class="txt">${p.cap}</div>`;
-    }
-    grid.appendChild(el);
+function renderAlbums() {
+  const wrap = document.getElementById("albumsWrap");
+  wrap.innerHTML = "";
+  (DATA.albums || []).forEach((album, ai) => {
+    const al = document.createElement("div");
+    al.className = "album";
+    al.innerHTML = '<div class="album-head"><div class="album-title">' + album.title + '</div><div class="album-date">' + (album.date || "") + '</div></div>';
+    (album.events || []).forEach((ev, ei) => {
+      const evEl = document.createElement("div");
+      evEl.className = "event";
+      const titleHtml = '<div class="event-title">' + ev.title + ' <span class="event-count">' + (ev.photos ? ev.photos.length : 0) + ' 张</span></div>';
+      evEl.innerHTML = titleHtml;
+      const stack = document.createElement("div");
+      stack.className = "stack";
+      const photos = ev.photos || [];
+      if (photos.length === 0) {
+        stack.innerHTML = '<div class="empty-event">（暂无照片）</div>';
+      } else {
+        photos.forEach((p, pi) => {
+          const ph = document.createElement("div");
+          ph.className = "ph " + (p.src ? "" : "placeholder " + PLACEHOLDER_CLASSES[(ai+ei+pi)%6]);
+          const offset = pi * 22;
+          const rot = (pi - (photos.length-1)/2) * 5;
+          ph.style.left = offset + "px";
+          ph.style.zIndex = pi + 1;
+          ph.style.transform = "rotate(" + rot + "deg)";
+          if (p.src) {
+            ph.innerHTML = '<img src="' + p.src + '" alt=""><div class="cap">' + (p.cap || "") + '</div>';
+            ph.onclick = () => openLightbox(p.src, p.cap);
+          } else {
+            ph.innerHTML = '<div class="txt">🖼️</div>';
+          }
+          stack.appendChild(ph);
+        });
+      }
+      evEl.appendChild(stack);
+      al.appendChild(evEl);
+    });
+    wrap.appendChild(al);
   });
-  group.appendChild(grid);
-  wrap.appendChild(group);
-});
+  // 同步管理面板的选择器
+  syncAlbumSelect();
+}
 
-// 时间线
-const tl = document.getElementById("timelineBox");
-CONFIG.timeline.forEach(t => {
-  const el = document.createElement("div");
-  el.className = "tl-item";
-  el.innerHTML = `<div class="date">${t.date}</div><div class="title">${t.title}</div><div class="desc">${t.desc}</div>`;
-  tl.appendChild(el);
-});
+/* =========================================================
+ * 时间线渲染
+ * ========================================================= */
+function renderTimeline() {
+  const tl = document.getElementById("timelineBox");
+  tl.innerHTML = "";
+  (DATA.timeline || []).forEach(t => {
+    const el = document.createElement("div");
+    el.className = "tl-item";
+    el.innerHTML = '<div class="date">' + t.date + '</div><div class="title">' + t.title + '</div><div class="desc">' + t.desc + '</div>';
+    tl.appendChild(el);
+  });
+}
 
-// 页脚
-document.getElementById("footerText").textContent =
-  `这个网页，只为你而写。♥ ${CONFIG.nameA} & ${CONFIG.nameB}`;
+/* =========================================================
+ * 灯箱
+ * ========================================================= */
+function openLightbox(src, cap) {
+  document.getElementById("lightboxImg").src = src;
+  document.getElementById("lightboxCap").textContent = cap || "";
+  document.getElementById("lightbox").style.display = "flex";
+}
+function closeLightbox(e) {
+  if (e.target === e.currentTarget) document.getElementById("lightbox").style.display = "none";
+}
 
-// 星空背景
+/* =========================================================
+ * 管理面板
+ * ========================================================= */
+function openAdmin() {
+  document.getElementById("adminPanel").style.display = "flex";
+  const authed = sessionStorage.getItem("love_admin") === "1";
+  document.getElementById("authBox").style.display = authed ? "none" : "block";
+  document.getElementById("editorBox").style.display = authed ? "block" : "none";
+  if (authed) { document.getElementById("tokenInput").value = authToken; syncAlbumSelect(); renderAlbumList(); }
+}
+function closeAdmin() { document.getElementById("adminPanel").style.display = "none"; }
+document.getElementById("adminPanel").addEventListener("click", e => { if (e.target === e.currentTarget) closeAdmin(); });
+
+function tryAuth() {
+  const v = document.getElementById("pwdInput").value;
+  if (v === ADMIN_PASSWORD) {
+    sessionStorage.setItem("love_admin", "1");
+    document.getElementById("authBox").style.display = "none";
+    document.getElementById("editorBox").style.display = "block";
+    document.getElementById("tokenInput").value = authToken;
+    syncAlbumSelect(); renderAlbumList();
+  } else {
+    document.getElementById("authStatus").textContent = "密码错误";
+    document.getElementById("authStatus").className = "status err";
+  }
+}
+
+function syncAlbumSelect() {
+  const sel = document.getElementById("albumSelect");
+  sel.innerHTML = "";
+  (DATA.albums || []).forEach(a => {
+    const o = document.createElement("option");
+    o.value = a.id; o.textContent = a.title;
+    sel.appendChild(o);
+  });
+}
+function renderAlbumList() {
+  const box = document.getElementById("albumList");
+  box.innerHTML = "";
+  (DATA.albums || []).forEach(a => {
+    const it = document.createElement("div");
+    it.className = "item";
+    it.innerHTML = '<span>' + a.title + '</span><span class="ops"><button class="btn small danger" onclick="removeAlbum(\'' + a.id + '\')">删</button></span>';
+    box.appendChild(it);
+  });
+}
+
+/* =========================================================
+ * GitHub 操作
+ * ========================================================= */
+function getToken() {
+  const t = document.getElementById("tokenInput").value.trim();
+  if (t) { authToken = t; localStorage.setItem("love_token", t); }
+  return authToken;
+}
+function api(method, url, data) {
+  const token = getToken();
+  if (!token) { setEditStatus("请先填写 GitHub Token", "err"); return Promise.reject("no token"); }
+  return fetch(url, {
+    method: method,
+    headers: {
+      "Authorization": "Bearer " + token,
+      "Accept": "application/vnd.github+json",
+      "X-GitHub-Api-Version": "2022-11-28",
+      "Content-Type": "application/json"
+    },
+    body: data ? JSON.stringify(data) : undefined
+  }).then(async r => {
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(j.message || ("HTTP " + r.status));
+    return j;
+  });
+}
+function b64(content) { return btoa(unescape(encodeURIComponent(content))); }
+
+function setEditStatus(msg, cls) {
+  const el = document.getElementById("editStatus");
+  el.textContent = msg; el.className = "status " + (cls || "");
+}
+
+async function getDataFileSha() {
+  try {
+    const j = await api("GET", "https://api.github.com/repos/" + REPO + "/contents/" + DATA_PATH);
+    return j.sha;
+  } catch (e) {
+    return null; // 不存在
+  }
+}
+
+async function saveData() {
+  setEditStatus("正在保存...");
+  try {
+    const sha = await getDataFileSha();
+    const payload = {
+      message: "update data.json",
+      content: b64(JSON.stringify(DATA, null, 2)),
+      branch: BRANCH
+    };
+    if (sha) payload.sha = sha;
+    await api("PUT", "https://api.github.com/repos/" + REPO + "/contents/" + DATA_PATH, payload);
+    setEditStatus("已保存，稍等 1~2 分钟线上生效", "ok");
+  } catch (e) {
+    setEditStatus("保存失败：" + e.message, "err");
+  }
+}
+
+/* =========================================================
+ * 添加操作
+ * ========================================================= */
+function addAlbum() {
+  const title = document.getElementById("newAlbumTitle").value.trim();
+  const date = document.getElementById("newAlbumDate").value.trim();
+  if (!title) { setEditStatus("请填写分区名称", "err"); return; }
+  DATA.albums = DATA.albums || [];
+  DATA.albums.push({ id: "a" + Date.now(), title: title, date: date, events: [] });
+  document.getElementById("newAlbumTitle").value = "";
+  document.getElementById("newAlbumDate").value = "";
+  renderAlbums(); renderAlbumList();
+  saveData();
+}
+
+function removeAlbum(id) {
+  DATA.albums = (DATA.albums || []).filter(a => a.id !== id);
+  renderAlbums(); renderAlbumList();
+  saveData();
+}
+
+async function uploadPhotos() {
+  const token = getToken();
+  if (!token) { setEditStatus("请先填写 GitHub Token", "err"); return; }
+  const albumId = document.getElementById("albumSelect").value;
+  const eventTitle = document.getElementById("eventTitle").value.trim();
+  const files = document.getElementById("photoFiles").files;
+  if (!albumId) { setEditStatus("请选择分区", "err"); return; }
+  if (!eventTitle) { setEditStatus("请填写事件名称", "err"); return; }
+  if (files.length === 0) { setEditStatus("请选择照片", "err"); return; }
+
+  const album = (DATA.albums || []).find(a => a.id === albumId);
+  if (!album) { setEditStatus("分区不存在", "err"); return; }
+
+  setEditStatus("正在上传 " + files.length + " 张照片...");
+
+  // 为本次事件生成目录
+  const dir = "photos/" + albumId + "/" + Date.now() + "/";
+  const uploaded = [];
+
+  for (let i = 0; i < files.length; i++) {
+    const f = files[i];
+    const ext = (f.name.split(".").pop() || "jpg").toLowerCase();
+    const fname = "p" + i + "." + ext;
+    try {
+      const fileB64 = await readFileAsBase64(f);
+      await api("PUT", "https://api.github.com/repos/" + REPO + "/contents/" + dir + fname, {
+        message: "add photo " + fname,
+        content: fileB64,
+        branch: BRANCH
+      });
+      uploaded.push({ src: dir + fname, cap: eventTitle });
+    } catch (e) {
+      setEditStatus("第 " + (i+1) + " 张上传失败：" + e.message, "err");
+      return;
+    }
+  }
+
+  // 加入事件
+  album.events = album.events || [];
+  let ev = album.events.find(e => e.title === eventTitle);
+  if (!ev) { ev = { id: "e" + Date.now(), title: eventTitle, photos: [] }; album.events.push(ev); }
+  ev.photos = ev.photos.concat(uploaded);
+
+  document.getElementById("eventTitle").value = "";
+  document.getElementById("photoFiles").value = "";
+  renderAlbums();
+  saveData();
+}
+
+function readFileAsBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(reader.result.split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+}
+
+function resetAll() {
+  if (!confirm("清空本机保存的 Token 和登录状态？")) return;
+  localStorage.removeItem("love_token");
+  sessionStorage.removeItem("love_admin");
+  authToken = "";
+  closeAdmin();
+  setEditStatus("");
+}
+
+/* =========================================================
+ * 星空背景
+ * ========================================================= */
 const cv = document.getElementById("stars"), ctx = cv.getContext("2d");
 let stars = [];
 function resize(){
@@ -309,7 +626,7 @@ resize(); addEventListener("resize", resize);
   stars.forEach(st => {
     st.a += st.v; const al = .35 + Math.abs(Math.sin(st.a))*.6;
     ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 7);
-    ctx.fillStyle = `rgba(255,255,255,${al})`; ctx.fill();
+    ctx.fillStyle = "rgba(255,255,255," + al + ")"; ctx.fill();
   });
   requestAnimationFrame(draw);
 })();
@@ -319,6 +636,9 @@ const io = new IntersectionObserver(es => es.forEach(e => {
   if (e.isIntersecting) e.target.classList.add("show");
 }), { threshold:.12 });
 document.querySelectorAll(".fade-in").forEach(el => io.observe(el));
+
+// 启动
+loadData();
 </script>
 </body>
 </html>
