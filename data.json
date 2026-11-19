@@ -1,0 +1,65 @@
+{
+  "nameA": "刘宏洋",
+  "nameB": "骆林洁",
+  "startDate": "2026-10-28",
+  "albums": [
+    {
+      "id": "date1",
+      "title": "第一次约会",
+      "date": "2026.11.07",
+      "events": [
+        {
+          "id": "e1",
+          "title": "荡古里小火锅",
+          "photos": [
+            { "src": "photos/date1/hotpot1.jpg", "cap": "荡古里小火锅" },
+            { "src": "photos/date1/hotpot2.jpg", "cap": "荡古里小火锅" }
+          ]
+        },
+        {
+          "id": "e2",
+          "title": "晚上去的 KTV",
+          "photos": [
+            { "src": "photos/date1/ktv.jpg", "cap": "KTV" }
+          ]
+        },
+        {
+          "id": "e3",
+          "title": "送我回学校",
+          "photos": [
+            { "src": "photos/date1/send-home.jpg", "cap": "送我回学校" }
+          ]
+        },
+        {
+          "id": "e4",
+          "title": "我们的合照",
+          "photos": [
+            { "src": "photos/date1/heying.jpg", "cap": "合照" }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "date2",
+      "title": "第二次约会",
+      "date": "2026.11.14",
+      "events": [
+        {
+          "id": "e1",
+          "title": "看电影",
+          "photos": []
+        },
+        {
+          "id": "e2",
+          "title": "揽月湾看海",
+          "photos": []
+        }
+      ]
+    }
+  ],
+  "timeline": [
+    { "date": "2026.10.28", "title": "我们在一起啦", "desc": "故事开始的那一天。" },
+    { "date": "2026.11.07", "title": "第一次约会（立冬）", "desc": "看电影、吃小火锅、拼豆、晚上去 KTV。那天下雨，你借我充电宝和雨伞。" },
+    { "date": "2026.11.14", "title": "第二次约会", "desc": "逛校园被保安拦下，改看电影、吃鸡公煲，下午私人影院，去揽月湾看海，晚上部队火锅。" }
+  ]
+}
