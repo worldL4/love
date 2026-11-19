@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>和你的一百件事 ❤</title>
+<style>
+  :root {
+    --bg: #1a1225;
+    --bg2: #241636;
+    --card: rgba(255,255,255,0.06);
+    --border: rgba(255,255,255,0.12);
+    --text: #f5eef8;
+    --sub: #b8a6c9;
+    --accent: #ff6b9d;
+    --accent2: #c084fc;
+    --gold: #ffd166;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+    line-height: 1.6; overflow-x: hidden;
+  }
+  #stars { position:fixed; inset:0; z-index:0; pointer-events:none; }
+  .main { position:relative; z-index:1; }
+
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:center; gap:8px; flex-wrap:wrap;
+    padding:12px; background:rgba(26,18,37,0.75); backdrop-filter:blur(12px);
+    border-bottom:1px solid var(--border);
+  }
+  nav a { color:var(--sub); text-decoration:none; font-size:14px; padding:6px 14px; border-radius:99px; transition:all .3s; }
+  nav a:hover { color:var(--accent); background:rgba(255,107,157,0.1); }
+  nav a.on { color:var(--accent); }
+
+  .wrap { max-width:960px; margin:0 auto; padding:96px 22px 60px; }
+
+  .head { text-align:center; margin-bottom:8px; }
+  .head h1 { font-size:30px; font-weight:800; letter-spacing:1px;
+    background:linear-gradient(90deg,var(--accent),var(--accent2));
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+  .head .sub { color:var(--sub); font-size:14px; margin-top:8px; }
+  .progress { text-align:center; color:var(--sub); font-size:13px; margin:14px 0 30px; }
+  .progress b { color:var(--gold); font-size:15px; }
+
+  .grid { display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; }
+  .item {
+    display:flex; align-items:flex-start; gap:10px;
+    padding:11px 14px; border-radius:12px; cursor:pointer;
+    border:1px solid var(--border); background:var(--card);
+    transition:all .2s; font-size:14.5px;
+  }
+  .item:hover { border-color:var(--accent); }
+  .item .box {
+    flex:0 0 auto; width:19px; height:19px; margin-top:2px; border-radius:5px;
+    border:1.5px solid var(--sub); display:flex; align-items:center; justify-content:center;
+    font-size:12px; color:transparent; transition:all .2s;
+  }
+  .item.done { opacity:.42; }
+  .item.done .box { background:var(--accent); border-color:var(--accent); color:#fff; }
+  .item.done .txt { text-decoration:line-through; }
+  .item .txt { color:var(--text); }
+  .item .no { flex:0 0 auto; color:var(--sub); font-size:11px; margin-top:3px; min-width:20px; }
+
+  .tip { text-align:center; color:var(--sub); font-size:12.5px; margin-top:34px; line-height:1.8; }
+
+  @media (max-width:640px){
+    .grid { grid-template-columns:1fr; }
+    .head h1 { font-size:24px; }
+    .wrap { padding:88px 16px 50px; }
+  }
+</style>
+</head>
+<body>
+<canvas id="stars"></canvas>
+<div class="main">
+
+<nav>
+  <a href="index.html">首页</a>
+  <a href="index.html#gallery">图集</a>
+  <a href="index.html#timeline">回忆录</a>
+  <a href="things.html" class="on">一百件事</a>
+</nav>
+
+<div class="wrap">
+  <div class="head">
+    <h1>和你的一百件事</h1>
+    <div class="sub">做完一件，就点亮一件 ✨</div>
+  </div>
+  <div class="progress">已完成 <b id="doneCount">0</b> / 100</div>
+  <div class="grid" id="grid"></div>
+  <div class="tip">进度保存在你自己的浏览器里<br>和 TA 一起，慢慢把这一页都点亮吧</div>
+</div>
+
+</div>
+
+<script>
+/* 星空背景（低开销） */
+const cv = document.getElementById("stars"), ctx = cv.getContext("2d");
+let stars = [];
+function resize(){
+  cv.width = innerWidth; cv.height = innerHeight;
+  stars = Array.from({length:70}, () => ({
+    x: Math.random()*cv.width, y: Math.random()*cv.height,
+    r: Math.random()*1.4 + .3, a: Math.random(), v: Math.random()*.02 + .005
+  }));
+}
+resize(); addEventListener("resize", resize);
+let lastDraw = 0;
+function draw(ts){
+  requestAnimationFrame(draw);
+  if (ts - lastDraw < 42) return; lastDraw = ts;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  stars.forEach(st => {
+    st.a += st.v; const al = .35 + Math.abs(Math.sin(st.a))*.6;
+    ctx.beginPath(); ctx.arc(st.x, st.y, st.r, 0, 7);
+    ctx.fillStyle = "rgba(255,255,255," + al + ")"; ctx.fill();
+  });
+}
+requestAnimationFrame(draw);
+
+/* 一百件事数据 */
+const THINGS = [
+  "和你看电影","和你吃饭","和你约会and逛街","和你散步","和你牵手",
+  "和你拍照","陪你打游戏","和你拥抱","和你一起吃蛋糕","和你睡觉",
+  "和你拼豆","和你过生日","和你喝酒","和你接吻","和你喝同一杯奶茶",
+  "和你一起逛超市","和你熬夜","和你去海边捡贝壳","和你一起吃路边摊","和你一起旅游",
+  "和你买零食","和你一起吹头发","和你戴情侣戒指","和你贴贴","和你抓娃娃",
+  "和你凌晨慢步","和你拍情侣照片","和你下雨撑同一把伞","和你一起做戒指","和你看同一场雪",
+  "和你分享趣事","和你窝在同一个沙发","和你去夜市","和你聊童年事","和你爬山",
+  "和你做喜欢的事","和你看恐怖片","和你吃一顿漂亮饭","和你吃宵夜","和你去迪士尼",
+  "和你逛操场","和你玩真心话大冒险","和你写小作文","和你去看海","和你去KTV唱歌",
+  "和你去鬼屋","和你坐摩天轮","和你互穿衣服","和你去吃早饭","和你一起听歌",
+  "和你看日出","和你看樱花","和你坐天台聊天","和你一起回家","和你见家长",
+  "和你吃同一个东西","和你放风筝","和你看凌晨四点的天空","和你跨年","和你海边发呆",
+  "和你去寺庙许愿","和你去游乐园","和你一起画画","和你一起跨年","和你涂石膏娃娃",
+  "和你放烟花","和你做蛋糕","和你过纪念日","和你一起去海边写下名字","和你诉苦",
+  "和你吃火锅","和你剪头发","和你玩小游戏","和你打卡网红餐厅","和你用拍立得",
+  "和你露营","和你染发","和你拼拼图","和你互换礼物","和你用情侣壁纸",
+  "和你洗碗","和你DIY手工","和你改掉一个坏毛病","和你等日落","和你一起插花",
+  "和你吃同一个冰淇淋","和你放孔明灯","和你发朋友圈","和你熬夜聊天","和你骑车兜风",
+  "和你一起看星星","和你过情人节","和你十指相扣","和你养一只猫/狗","和你自驾游",
+  "和你拍红底照","和你去演唱会","和你同居","和你结婚","和你有个家"
+];
+
+/* 读取已勾选状态 */
+const KEY = "love_things_done";
+let done = {};
+try { done = JSON.parse(localStorage.getItem(KEY)) || {}; } catch(e) { done = {}; }
+
+const grid = document.getElementById("grid");
+function render() {
+  grid.innerHTML = "";
+  let count = 0;
+  THINGS.forEach((t, i) => {
+    const no = i + 1;
+    const isDone = done[no];
+    if (isDone) count++;
+    const el = document.createElement("div");
+    el.className = "item" + (isDone ? " done" : "");
+    el.innerHTML = '<span class="no">' + no + '</span><span class="box">✓</span><span class="txt">' + t + '</span>';
+    el.onclick = () => {
+      if (done[no]) delete done[no]; else done[no] = true;
+      try { localStorage.setItem(KEY, JSON.stringify(done)); } catch(e) {}
+      render();
+    };
+    grid.appendChild(el);
+  });
+  document.getElementById("doneCount").textContent = count;
+}
+render();
+</script>
+</body>
+</html>
