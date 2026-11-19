@@ -66,22 +66,34 @@
   .next-anniv { margin-top:26px; color:var(--sub); font-size:14px; }
   .next-anniv b { color:var(--gold); }
 
-  /* 照片墙 */
-  .gallery { display:grid; grid-template-columns:repeat(auto-fill,minmax(230px,1fr)); gap:16px; }
-  .ph {
-    position:relative; border-radius:18px; overflow:hidden; cursor:pointer;
-    aspect-ratio:4/5; border:1px solid var(--border);
-    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:10px;
-    transition:transform .35s, box-shadow .35s;
+  /* 照片图集（按约会分区） */
+  .album-group { margin-bottom:40px; }
+  .album-title {
+    display:flex; align-items:center; gap:10px;
+    font-size:18px; font-weight:700; margin-bottom:16px; color:var(--text);
   }
-  .ph:hover { transform:translateY(-6px); box-shadow:0 14px 40px rgba(192,132,252,.25); }
+  .album-title::before {
+    content:"♥"; color:var(--accent); font-size:16px;
+  }
+  .album-title .count { font-size:12px; color:var(--sub); font-weight:400; }
+  .gallery {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(140px,1fr));
+    gap:10px;
+  }
+  .ph {
+    position:relative; border-radius:12px; overflow:hidden; cursor:pointer;
+    aspect-ratio:1/1; border:1px solid var(--border);
+    display:flex; align-items:center; justify-content:center; flex-direction:column; gap:6px;
+    transition:transform .25s, box-shadow .25s;
+  }
+  .ph:hover { transform:translateY(-4px); box-shadow:0 8px 24px rgba(192,132,252,.28); }
   .ph img { width:100%; height:100%; object-fit:cover; position:absolute; inset:0; }
   .ph .cap {
-    position:absolute; left:0; right:0; bottom:0; padding:26px 14px 12px; font-size:13px;
-    background:linear-gradient(transparent,rgba(0,0,0,.65)); color:#fff;
+    position:absolute; left:0; right:0; bottom:0; padding:16px 8px 8px; font-size:11px;
+    background:linear-gradient(transparent,rgba(0,0,0,.7)); color:#fff; text-align:center;
   }
-  .ph.placeholder .heart { font-size:44px; opacity:.85; }
-  .ph.placeholder .txt { font-size:13px; color:var(--sub); text-align:center; padding:0 14px; }
+  .ph.placeholder .heart { font-size:26px; opacity:.85; }
+  .ph.placeholder .txt { font-size:11px; color:var(--sub); text-align:center; padding:0 8px; }
   .ph.p1 { background:linear-gradient(135deg,#5b2a86,#a34a9e); }
   .ph.p2 { background:linear-gradient(135deg,#83314a,#d16ba5); }
   .ph.p3 { background:linear-gradient(135deg,#3d2b6b,#7a5cc0); }
@@ -105,34 +117,6 @@
   .tl-item .title { font-size:19px; font-weight:700; margin:4px 0; }
   .tl-item .desc { color:var(--sub); font-size:14.5px; }
 
-  /* 小游戏 */
-  .games { display:grid; grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); gap:20px; }
-  .game {
-    background:var(--card); border:1px solid var(--border); border-radius:20px;
-    padding:28px; text-align:center; backdrop-filter:blur(6px);
-  }
-  .game h3 { font-size:20px; margin-bottom:8px; }
-  .game .hint { color:var(--sub); font-size:13px; margin-bottom:20px; }
-  .game .result {
-    min-height:64px; display:flex; align-items:center; justify-content:center;
-    font-size:20px; font-weight:700; color:var(--gold); margin-bottom:20px;
-    background:rgba(255,209,102,.07); border-radius:14px; padding:10px;
-  }
-  button.btn {
-    background:linear-gradient(90deg,var(--accent),var(--accent2)); color:#fff; border:none;
-    padding:11px 30px; border-radius:99px; font-size:15px; cursor:pointer; font-weight:600;
-    transition:transform .2s, box-shadow .2s; font-family:inherit;
-  }
-  button.btn:hover { transform:scale(1.05); box-shadow:0 8px 24px rgba(255,107,157,.35); }
-  button.btn:active { transform:scale(.97); }
-
-  /* 情书 */
-  .letter {
-    max-width:680px; margin:0 auto; background:var(--card); border:1px solid var(--border);
-    border-radius:22px; padding:40px 36px; font-size:16px; line-height:2;
-  }
-  .letter .sig { text-align:right; color:var(--sub); margin-top:18px; font-size:14px; }
-
   footer { text-align:center; color:var(--sub); font-size:13px; padding:50px 20px 40px; }
   footer .heartline { letter-spacing:8px; color:var(--accent); margin-bottom:10px; font-size:16px; }
 
@@ -153,10 +137,8 @@
 
 <nav>
   <a href="#home">首页</a>
-  <a href="#gallery">照片墙</a>
+  <a href="#gallery">图集</a>
   <a href="#timeline">回忆录</a>
-  <a href="#games">小游戏</a>
-  <a href="#letter">情书</a>
 </nav>
 
 <!-- 首页 -->
@@ -173,11 +155,11 @@
   <div class="next-anniv" id="nextAnniv"></div>
 </section>
 
-<!-- 照片墙 -->
+<!-- 照片图集 -->
 <section id="gallery">
-  <h2 class="fade-in">📷 照片墙</h2>
-  <div class="sec-sub fade-in">点击照片可以放大 · 把照片发给我，我会替换进这里</div>
-  <div class="gallery fade-in" id="galleryGrid"></div>
+  <h2 class="fade-in">📷 我们的图集</h2>
+  <div class="sec-sub fade-in">按约会分区 · 点击照片可以放大</div>
+  <div class="fade-in" id="galleryWrap"></div>
 </section>
 
 <!-- 时间线 -->
@@ -185,33 +167,6 @@
   <h2 class="fade-in">📜 回忆时间线</h2>
   <div class="sec-sub fade-in">从相遇到现在的每一步，都值得被记住</div>
   <div class="timeline fade-in" id="timelineBox"></div>
-</section>
-
-<!-- 小游戏 -->
-<section id="games">
-  <h2 class="fade-in">🎲 恋爱小游戏</h2>
-  <div class="sec-sub fade-in">选择困难症和仪式感，都交给我</div>
-  <div class="games fade-in">
-    <div class="game">
-      <h3>🍜 今天吃什么</h3>
-      <div class="hint">点击抽取，再也不用纠结啦</div>
-      <div class="result" id="foodResult">点击下方按钮开始</div>
-      <button class="btn" onclick="drawFood()">抽一个！</button>
-    </div>
-    <div class="game">
-      <h3>💌 情话盲盒</h3>
-      <div class="hint">每天拆一个，甜度随机爆表</div>
-      <div class="result" id="wishResult">点击下方按钮拆盒</div>
-      <button class="btn" onclick="drawWish()">拆盲盒！</button>
-    </div>
-  </div>
-</section>
-
-<!-- 情书 -->
-<section id="letter">
-  <h2 class="fade-in">✉️ 写给你的信</h2>
-  <div class="sec-sub fade-in">理工男的浪漫，是把心意写成代码</div>
-  <div class="letter fade-in" id="letterBody"></div>
 </section>
 
 <footer>
@@ -235,15 +190,26 @@ const CONFIG = {
   // 在一起的日期（用于倒计时，格式：年,月-1,日）
   startDate: new Date(2026, 9, 28),
 
-  // 照片墙：img 为图片路径（把照片放进同目录并改名即可）；cap 为配文
+  // 照片图集：按约会分区。每个区是一个对象：title=分区名，photos=该区的照片数组
+  // 每张照片：img=图片路径（把照片放进同目录并改名），cap=配文
   // 下面先用占位卡片，发我真实照片后即可替换
-  photos: [
-    { img: null, cap: "第一张合照（占位）" },
-    { img: null, cap: "第一次旅行（占位）" },
-    { img: null, cap: "一起看的日落（占位）" },
-    { img: null, cap: "那家常去的店（占位）" },
-    { img: null, cap: "生日那天的你（占位）" },
-    { img: null, cap: "日常的小确幸（占位）" },
+  albums: [
+    {
+      title: "第一次约会 · 2026.11.07",
+      photos: [
+        { img: null, cap: "电影《神探的痕迹》" },
+        { img: null, cap: "拼豆" },
+        { img: null, cap: "一起吃的小火锅" },
+      ],
+    },
+    {
+      title: "第二次约会 · 2026.11.14",
+      photos: [
+        { img: null, cap: "电影《我们仅有一次的人生》" },
+        { img: null, cap: "揽月湾看海" },
+        { img: null, cap: "部队火锅" },
+      ],
+    },
   ],
 
   // 回忆时间线：date / title / desc
@@ -253,22 +219,6 @@ const CONFIG = {
     { date: "2026.11.14", title: "第二次约会", desc: "逛校园被保安拦下，改看电影、吃鸡公煲，下午私人影院，去揽月湾看海，晚上部队火锅。" },
     { date: "——", title: "下一个纪念日", desc: "正在发生，等待被记录……" },
   ],
-
-  // 「今天吃什么」菜单，可以随便加
-  foods: ["火锅","烤肉","日料","麻辣烫","披萨","饺子","奶茶配炸鸡","牛肉面","寿司","川菜","螺蛳粉","在家做饭"],
-
-  // 情话盲盒，可以随时补充
-  wishes: [
-    "遇见你之后，连 OS 更新日志都变得可爱了。",
-    "我的人生没有 bug，直到你出现——原来你是 feature。",
-    "别的算法求最优解，我的算法只求你。",
-    "如果爱你需要理由，那理由就是没有理由。",
-    "你是我所有随机事件里，最确定的那个答案。",
-    "今天也想见你，明天也是，天天如此。",
-  ],
-
-  // 情书内容（支持换行）
-  letter: "亲爱的：\n\n以前的人写情书，我觉得现在的男生可以为你写一个网页。\n\n这里的每一行代码都在说同一句话——谢谢你出现在我的生活里。往后的日子，照片会越来越多，时间线会越来越长，而我会一直在。\n\n「从今往后，我的每个 to-do list 里，第一条永远是你。」",
 };
 
 /* =========================================================
@@ -300,19 +250,31 @@ function tick(){
 }
 tick(); setInterval(tick, 1000);
 
-// 照片墙
+// 照片图集（按约会分区）
 const PLACEHOLDER_CLASSES = ["p1","p2","p3","p4","p5","p6"];
-const grid = document.getElementById("galleryGrid");
-CONFIG.photos.forEach((p, i) => {
-  const el = document.createElement("div");
-  el.className = "ph " + (p.img ? "" : "placeholder " + PLACEHOLDER_CLASSES[i % 6]);
-  if (p.img) {
-    el.innerHTML = `<img src="${p.img}" alt="${p.cap}"><div class="cap">${p.cap}</div>`;
-    el.onclick = () => { lightboxImg.src = p.img; lightbox.style.display = "flex"; };
-  } else {
-    el.innerHTML = `<div class="heart">🖼️</div><div class="txt">${p.cap}</div>`;
-  }
-  grid.appendChild(el);
+const wrap = document.getElementById("galleryWrap");
+CONFIG.albums.forEach((album, ai) => {
+  const group = document.createElement("div");
+  group.className = "album-group";
+  const title = document.createElement("div");
+  title.className = "album-title";
+  title.innerHTML = `${album.title} <span class="count">${album.photos.length} 张</span>`;
+  group.appendChild(title);
+  const grid = document.createElement("div");
+  grid.className = "gallery";
+  album.photos.forEach((p, i) => {
+    const el = document.createElement("div");
+    el.className = "ph " + (p.img ? "" : "placeholder " + PLACEHOLDER_CLASSES[(ai + i) % 6]);
+    if (p.img) {
+      el.innerHTML = `<img src="${p.img}" alt="${p.cap}"><div class="cap">${p.cap}</div>`;
+      el.onclick = () => { lightboxImg.src = p.img; lightbox.style.display = "flex"; };
+    } else {
+      el.innerHTML = `<div class="heart">🖼️</div><div class="txt">${p.cap}</div>`;
+    }
+    grid.appendChild(el);
+  });
+  group.appendChild(grid);
+  wrap.appendChild(group);
 });
 
 // 时间线
@@ -324,32 +286,7 @@ CONFIG.timeline.forEach(t => {
   tl.appendChild(el);
 });
 
-// 小游戏
-let foodSpinning = false;
-function drawFood(){
-  if (foodSpinning) return;
-  foodSpinning = true;
-  const box = document.getElementById("foodResult");
-  let n = 0;
-  const timer = setInterval(() => {
-    box.textContent = "🎲 " + CONFIG.foods[Math.floor(Math.random()*CONFIG.foods.length)];
-    if (++n >= 14) {
-      clearInterval(timer);
-      const pick = CONFIG.foods[Math.floor(Math.random()*CONFIG.foods.length)];
-      box.textContent = "✨ 就吃「" + pick + "」吧！";
-      foodSpinning = false;
-    }
-  }, 90);
-}
-function drawWish(){
-  const pick = CONFIG.wishes[Math.floor(Math.random()*CONFIG.wishes.length)];
-  document.getElementById("wishResult").textContent = pick;
-}
-
-// 情书
-document.getElementById("letterBody").innerHTML =
-  CONFIG.letter.split("\n").map(l => `<p>${l || "&nbsp;"}</p>`).join("") +
-  `<div class="sig">—— 永远爱你的 ${CONFIG.nameA}</div>`;
+// 页脚
 document.getElementById("footerText").textContent =
   `这个网页，只为你而写。♥ ${CONFIG.nameA} & ${CONFIG.nameB}`;
 
